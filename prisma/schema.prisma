@@ -1,0 +1,39 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Propiedad {
+  id              Int       @id @default(autoincrement())
+  titulo          String
+  descripcion     String
+  
+  enVenta         Boolean   @default(false)
+  precioVenta     Float?
+  monedaVenta     String?   @default("USD")
+  
+  enAlquiler      Boolean   @default(false)
+  precioAlquiler  Float?
+  monedaAlquiler  String?   @default("ARS")
+
+  m2              Int
+  ambientes       Int
+  habitaciones    Int
+  banos           Int
+  patio           Boolean   @default(false)
+  cochera         Boolean   @default(false)
+  activa          Boolean   @default(true)
+
+  imagenes        Imagen[]
+}
+
+model Imagen {
+  id           Int       @id @default(autoincrement())
+  url          String
+  esPrincipal  Boolean   @default(false)
+  propiedadId  Int
+  propiedad    Propiedad @relation(fields: [propiedadId], references: [id], onDelete: Cascade)
+}
