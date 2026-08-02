@@ -1,6 +1,6 @@
-import * as propiedadController from '../controllers/propiedad-controller';
+import * as propiedadController from '../controllers/propiedad-controller.js';
 import {Router} from 'express';
-import { autenticar } from '../middlewares/auth-middleware';
+import { autenticar } from '../middlewares/auth-middleware.js';
 
 const router = Router();
 

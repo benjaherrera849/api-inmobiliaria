@@ -1,17 +1,21 @@
 import {PrismaClient} from '@prisma/client';
-import {Request, Response} from 'express';
+import {PrismaPg } from '@prisma/adapter-pg';
+import {type Request, type Response} from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
+
+//FUNCION LOGIN
 export const login = async (req: Request, res: Response) => {
     try{
   const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({
-        where: { email:email },
+        where: { email: email },
     });
 
    //chequeamos que el usuario exista
@@ -26,8 +30,13 @@ export const login = async (req: Request, res: Response) => {
     }
    //comparamos la contraseña ingresada con la almacenada en la base de datos
    //si es valida creamos un token jwt y lo enviamos al cliente
+    const secret = process.env.JWT_SECRET;
+    
+    if(!secret) {
+        return res.status(500).json({ message: 'Error interno del servidor: falta clave secreta' });
+    }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
 
     return res.json({ token });
 

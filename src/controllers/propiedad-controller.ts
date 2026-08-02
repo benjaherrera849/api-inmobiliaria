@@ -1,8 +1,10 @@
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import {PrismaPg } from '@prisma/adapter-pg';
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
-const prisma = new PrismaClient();
-
+//FUNCION GET ALL
 export const getPropiedades = async (req:Request, res:Response) => {
   try{
     //buscamos todos los elementos de la tabla propiedad en la base de datos y los devolvemos en formato json al cliente
@@ -16,15 +18,15 @@ export const getPropiedades = async (req:Request, res:Response) => {
 }
 }
 
-
+//FUNCION GET BY ID
 export const getPropiedadById = async (req:Request, res:Response) => {
 
   try{
-  const { idParam } = req.params;
+  const { id: idParam } = req.params;
   //como req.params puede ser un string o un array de strings, verificamos si es un array y tomamos el primer elemento
   const id = Array.isArray(idParam) ? idParam[0] : idParam;
   //pasamos el id (string) que recibimos por params a un numero para poder buscarlo en la base de datos
-  const idNumber = parseInt(id, 10);
+  const idNumber = parseInt(id ?? '', 10);
 
   if (isNaN(idNumber)) {
     //verificamos si es un numero para mantener los codigos de estado HTTP correctos y no enviar un 500 al cliente
@@ -52,8 +54,7 @@ export const getPropiedadById = async (req:Request, res:Response) => {
 }
 
 
-
-
+//FUNCION CREATE
  export const crearPropiedad = async (req: Request, res: Response) => {
   try {
     /*tomamos todo el objeto, y comparamos con la estructura de la tabla propiedad en la base de datos,
@@ -73,12 +74,12 @@ export const getPropiedadById = async (req:Request, res:Response) => {
   }
 }
 
-
+//FUNCION UPDATE
   export const updatePropiedad = async (req: Request, res: Response) => {
     try {
-      const { idParam } = req.params;
+      const { id: idParam } = req.params;
       const id = Array.isArray(idParam) ? idParam[0] : idParam;
-      const idNumber = parseInt(id, 10);
+      const idNumber = parseInt(id ?? '', 10);
       
       if(isNaN(idNumber)) {
         return res.status(400).json({ mensaje: 'ID inválido' });
@@ -91,10 +92,12 @@ export const getPropiedadById = async (req:Request, res:Response) => {
       if(!propiedadExistente) {
         return res.status(404).json({ mensaje: 'Propiedad no encontrada' });
       }
+     //igual que antes, separamos el id en caso de que lo manden en el body manualmente
+      const {id: id_body, ...datosPropiedad} = req.body
       
       const propiedadUpdate = await prisma.propiedad.update({
         where: { id: idNumber },
-        data: req.body,
+        data: datosPropiedad
       });
 
       return res.json(propiedadUpdate);
@@ -104,5 +107,39 @@ export const getPropiedadById = async (req:Request, res:Response) => {
       return res.status(500).json({ mensaje: 'Error al actualizar la propiedad' });
     }
   }
+
+
+    export const deletePropiedad = async (req: Request, res: Response) => {
+      try {
+        const { id: idParam } = req.params;
+        const id = Array.isArray(idParam) ? idParam[0] : idParam;
+        const idNumber = parseInt(id ?? '', 10);
+
+        if(isNaN(idNumber)) {
+          return res.status(400).json({ mensaje: 'ID inválido' });
+        }
+
+        const propiedadExistente = await prisma.propiedad.findUnique({
+          where: { id: idNumber },
+        });
+
+        if(!propiedadExistente) {
+          return res.status(404).json({ mensaje: 'Propiedad no encontrada' });
+        }
+
+        await prisma.propiedad.delete({
+          where: { id: idNumber },
+        });
+      }
+      catch (error) { 
+      return res.status(500).json({ mensaje: 'Error al eliminar la propiedad' });
+      }
+    }
+
+
+
+
+
+  
 
 
