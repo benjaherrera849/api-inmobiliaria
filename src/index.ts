@@ -1,6 +1,4 @@
-
-import dotenv from 'dotenv';
-dotenv.config();
+import './.env.js';
 import application from 'express';
 import propiedadRoutes from './routes/propiedad-routes.js';
 import authRoutes from './routes/auth-routes.js';

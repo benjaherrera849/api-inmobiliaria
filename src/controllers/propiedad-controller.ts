@@ -100,7 +100,7 @@ export const getPropiedadById = async (req:Request, res:Response) => {
         data: datosPropiedad
       });
 
-      return res.json(propiedadUpdate);
+      return res.status(200).json(propiedadUpdate);
 
     } catch (error) {
       console.error(error);
@@ -130,6 +130,7 @@ export const getPropiedadById = async (req:Request, res:Response) => {
         await prisma.propiedad.delete({
           where: { id: idNumber },
         });
+        return res.status(200).json({ mensaje: 'Propiedad eliminada correctamente' });
       }
       catch (error) { 
       return res.status(500).json({ mensaje: 'Error al eliminar la propiedad' });
