@@ -1,4 +1,6 @@
 //drivers y adaptadores de postgre
+
+//importamos dotenv porque se ejecute primero este archivo y no se conecta a la base de datos si no se importa
 import 'dotenv/config';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
