@@ -67,7 +67,7 @@ export const getPropiedadById = async (req:Request, res:Response) => {
     const nuevaPropiedad = await prisma.propiedad.create({
       data: {
         ...datosPropiedad,
-        imagenes: imagenes, //si hay imagenes, las creamos, si no, dejamos el campo undefined
+        imagenes: imagenes ? {create : imagenes} : undefined, //si hay imagenes, las creamos, si no, dejamos el campo undefined, lo hacemos asi porque en el modelo esta definido como imagenes[]
       }
     });
 
@@ -100,7 +100,7 @@ export const getPropiedadById = async (req:Request, res:Response) => {
       
       const propiedadUpdate = await prisma.propiedad.update({
         where: { id: idNumber },
-        data:{...datosPropiedad, imagenes: imagenes}
+        data:{...datosPropiedad, imagenes: imagenes ? {create : imagenes} : undefined}
       });
 
       return res.status(200).json(propiedadUpdate);
