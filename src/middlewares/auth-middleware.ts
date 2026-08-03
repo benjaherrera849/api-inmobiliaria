@@ -15,7 +15,12 @@ export const autenticar = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     //verificamos que el token sea valido, si no es valido se lanzara un error y se devolvera un 401 al cliente
-    const secret: string = process.env.JWT_SECRET || 'clave_secreta_provisoria';
+    const secret = process.env.JWT_SECRET;
+
+    if(!secret) {
+      return res.status(500).json({ mensaje: 'Error interno del servidor: falta clave secreta' });
+    }
+    
     jwt.verify(token, secret);
     
     //si es valido, llamamos a next() para que continue con la ejecucion de la ruta

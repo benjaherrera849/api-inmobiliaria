@@ -19,7 +19,7 @@ model Propiedad {
   precioAlquiler  Float?
   monedaAlquiler  String?   @default("ARS")
 
-  m2              Int
+  m2              Int?
   ambientes       Int
   habitaciones    Int
   banos           Int
