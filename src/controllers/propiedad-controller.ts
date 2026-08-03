@@ -61,11 +61,14 @@ export const getPropiedadById = async (req:Request, res:Response) => {
       si hay algun campo que no coincida con la estructura de la tabla, prisma nos devolvera un error,
       esto lo hago para no tener que escribir todos los campos de la tabla propiedad ya que son muchos y quedaria un codigo poco legible*/
 
-    const {id, ...datosPropiedad} = req.body;
+    const {id, imagenes, ...datosPropiedad} = req.body;
     //aislamos el id del resto de datos, en caso de que alguien quiera ingresar un id manualmente, lo cual romperia el sistema ya que esta definido como autoincremental
 
     const nuevaPropiedad = await prisma.propiedad.create({
-      data: datosPropiedad
+      data: {
+        ...datosPropiedad,
+        imagenes: imagenes, //si hay imagenes, las creamos, si no, dejamos el campo undefined
+      }
     });
 
     return res.status(201).json(nuevaPropiedad);
@@ -93,11 +96,11 @@ export const getPropiedadById = async (req:Request, res:Response) => {
         return res.status(404).json({ mensaje: 'Propiedad no encontrada' });
       }
      //igual que antes, separamos el id en caso de que lo manden en el body manualmente
-      const {id: id_body, ...datosPropiedad} = req.body
+      const {id: id_body, imagenes, ...datosPropiedad} = req.body
       
       const propiedadUpdate = await prisma.propiedad.update({
         where: { id: idNumber },
-        data: datosPropiedad
+        data:{...datosPropiedad, imagenes: imagenes}
       });
 
       return res.status(200).json(propiedadUpdate);
