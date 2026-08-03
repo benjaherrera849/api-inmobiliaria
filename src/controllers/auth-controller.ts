@@ -4,21 +4,22 @@ import {type Request, type Response} from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 
+
 //FUNCION LOGIN
+
 export const login = async (req: Request, res: Response) => {
     try{
-  const { email, password } = req.body;
+     const { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({
+     const user = await prisma.user.findUnique({
         where: { email: email },
-    });
+         });
 
-   //chequeamos que el usuario exista
+  //chequeamos que el usuario exista
    
     if(!user){
         return res.status(404).json({ message: 'email invalido' });

@@ -4,7 +4,11 @@ import {PrismaPg } from '@prisma/adapter-pg';
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
+
+
+
 //FUNCION GET ALL
+
 export const getPropiedades = async (req:Request, res:Response) => {
   try{
     //buscamos todos los elementos de la tabla propiedad en la base de datos y los devolvemos en formato json al cliente
@@ -18,7 +22,9 @@ export const getPropiedades = async (req:Request, res:Response) => {
 }
 }
 
+
 //FUNCION GET BY ID
+
 export const getPropiedadById = async (req:Request, res:Response) => {
 
   try{
@@ -54,7 +60,9 @@ export const getPropiedadById = async (req:Request, res:Response) => {
 }
 
 
+
 //FUNCION CREATE
+
  export const crearPropiedad = async (req: Request, res: Response) => {
   try {
     /*tomamos todo el objeto, y comparamos con la estructura de la tabla propiedad en la base de datos,
@@ -66,8 +74,7 @@ export const getPropiedadById = async (req:Request, res:Response) => {
 
     const nuevaPropiedad = await prisma.propiedad.create({
       data: {
-        ...datosPropiedad,
-        imagenes: imagenes ? {create : imagenes} : undefined, //si hay imagenes, las creamos, si no, dejamos el campo undefined, lo hacemos asi porque en el modelo esta definido como imagenes[]
+        ...datosPropiedad
       }
     });
 
@@ -77,7 +84,10 @@ export const getPropiedadById = async (req:Request, res:Response) => {
   }
 }
 
+
+
 //FUNCION UPDATE
+
   export const updatePropiedad = async (req: Request, res: Response) => {
     try {
       const { id: idParam } = req.params;
@@ -110,6 +120,9 @@ export const getPropiedadById = async (req:Request, res:Response) => {
       return res.status(500).json({ mensaje: 'Error al actualizar la propiedad' });
     }
   }
+
+
+    //FUNCION DELETE
 
 
     export const deletePropiedad = async (req: Request, res: Response) => {
