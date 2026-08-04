@@ -6,6 +6,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum TipoPropiedad {
+  CASA
+  DEPARTAMENTO
+  LOTE
+  OTROS
+}
+
 model Propiedad {
   id              Int       @id @default(autoincrement())
   titulo          String
@@ -18,6 +25,8 @@ model Propiedad {
   enAlquiler      Boolean   @default(false)
   precioAlquiler  Float?
   monedaAlquiler  String?   @default("ARS")
+
+  tipo            TipoPropiedad
 
   m2              Int
   ambientes       Int
