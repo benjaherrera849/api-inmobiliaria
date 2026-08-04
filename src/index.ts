@@ -2,6 +2,7 @@ import './.env.js';
 import application from 'express';
 import propiedadRoutes from './routes/propiedad-routes.js';
 import authRoutes from './routes/auth-routes.js';
+import imagenesRoutes from './routes/imagenes-routes.js';
 import cors from 'cors';
 
 
@@ -15,6 +16,7 @@ app.use(application.json());
 // Conectamos el archivo de rutas
 app.use('/', propiedadRoutes);
 app.use('/', authRoutes);
+app.use('/', imagenesRoutes);
 
 // Levantamos el servidor TCP
 app.listen(process.env.PORT, () => {
